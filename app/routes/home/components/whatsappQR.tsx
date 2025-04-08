@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3001"); // Conexión con el servidor
+const socket = io({
+  path: "/api/ws/socket.io",
+  transports: ["websocket"],
+});
 
 export default function WhatsappQR() {
   const [qrCode, setQrCode] = useState(null)

@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copiamos package.json y lock para instalar deps
+COPY package*.json ./
+
+RUN npm ci
+
+# Copiamos el build
+COPY ./build ./build
+
+# Arrancamos el server SSR
+CMD ["npx", "react-router-serve", "./build/server/index.js"]
