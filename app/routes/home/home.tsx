@@ -1,7 +1,8 @@
 import type { Route } from "./+types/home";
-import  WhatsappQR from "./components/whatsappQR";
+import  WhatsappQR from "../components/whatsappQR";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { Outlet } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,6 +13,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return <>
-  <WhatsappQR />
+  <h1>test</h1>
+  {/* <WhatsappQR /> */}
+  <Outlet />
   </>
 }
