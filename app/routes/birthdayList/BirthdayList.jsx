@@ -20,7 +20,9 @@ export default function BirthdayList() {
     async function fetchData() {
       try {
         // const response = await fetch("https://LISTARAPI");
-        const response = await fetch("http://localhost:3001/api/customers");
+        const response = await fetch(
+          "https://servidorossa.ddns.net/api/customers"
+        );
         if (!response.ok) {
           throw new Error("Error al obtener la lista");
         }
@@ -45,7 +47,7 @@ export default function BirthdayList() {
     try {
       // const response = await fetch(`http://localhost:3001/api/customers/${id}`, {
       const response = await fetch(
-        `http://localhost:3001/api/customers/${id}`,
+        `https://servidorossa.ddns.net/api/customers/${id}`,
         {
           method: "DELETE",
         }

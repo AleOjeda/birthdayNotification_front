@@ -3,7 +3,8 @@ import { io } from "socket.io-client";
 import Box from "@mui/material/Box";
 
 // const socket = io({
-const socket = io("localhost:3001", {
+// const socket = io("localhost:3001", {
+const socket = io({
   path: "/api/ws/socket.io",
   transports: ["websocket"],
 });
@@ -11,15 +12,24 @@ const socket = io("localhost:3001", {
 export default function WhatsappQR() {
   const [qrCode, setQrCode] = useState(null);
   const [status, setStatus] = useState("Esperando QR...");
+  const [isConnected, setIsConnected] = useState(false);
   useEffect(() => {
     socket.on("qr", (qr) => {
       console.log("QR recibido");
       setQrCode(qr);
       setStatus("Escanea el QR con whatsapp");
+      setIsConnected(false);
     });
 
     socket.on("ready", () => {
       setQrCode(null);
+      setStatus("Whatsapp conectado ✅");
+      setIsConnected(true);
+    });
+
+    socket.on("already_logged_in", () => {
+      setQrCode(null);
+      setIsConnected(true);
       setStatus("Whatsapp conectado ✅");
     });
 
@@ -38,6 +48,7 @@ export default function WhatsappQR() {
       socket.off("ready");
       socket.off("authenticated");
       socket.off("auth_failure");
+      socket.off("already_logged_in");
     };
   }, []);
 
@@ -57,7 +68,9 @@ export default function WhatsappQR() {
           border: "2px solid grey",
         }}
       >
-        <><h2 style={{ textAlign: "center" }}>{status}</h2></>
+        <>
+          <h2 style={{ textAlign: "center" }}>{status}</h2>
+        </>
         {qrCode && (
           <>
             <img
