@@ -6,6 +6,8 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
+    "prueba":" abajo es prueba local prod con:",
+    "preview": "npm run build && npm run start",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {

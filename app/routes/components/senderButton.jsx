@@ -29,9 +29,9 @@ export default function SenderButton() {
     setWaitingApi(true);
 setSecondsLeft(5);
     try {
-      // const resp = await fetch("http://ENVIARLISTADO", { method: "POST" });
-      const resp = await fetch("https://servidorossa.ddns.net/api/routineTask/sendWhatsappWithHappyBirthdays", { method: "POST" });
-      // const resp = await fetch("http://servidorossa.ddns.net/api/routineTask/sendWhatsappWithHappyBirthdays", { method: "POST" });
+      const resp = await fetch(`${apiUrl}/api/routineTask/sendWhatsappWithHappyBirthdays`, { method: "POST" });
+      // const resp = await fetch("https://servidorossa.ddns.net/api/routineTask/sendWhatsappWithHappyBirthdays", { method: "POST" });
+      // const resp = await fetch("http://localhost:3001/api/routineTask/sendWhatsappWithHappyBirthdays", { method: "POST" });
       if (!resp.ok) throw new Error("Error de API");
       // Aquí podrías mostrar un toast, snackbar, etc.
     } catch (err) {

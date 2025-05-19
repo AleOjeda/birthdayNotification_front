@@ -15,7 +15,6 @@ import EditBirthdayModal from "./EditBirthdayModal";
 export default function BirthdayList() {
   const [birthdayList, setBirthdayList] = useState([]);
   const navigate = useNavigate();
-
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -49,7 +48,8 @@ export default function BirthdayList() {
   const handleSave = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/customers/${selectedPerson.id}`,
+        `${apiUrl}/api/customers/${selectedPerson.id}`,
+        // `http://localhost:3001/api/customers/${selectedPerson.id}`,
         // `https://servidorossa.ddns.net/api/customers/${selectedPerson.id}`,
         {
           method: "PUT",
@@ -76,9 +76,11 @@ export default function BirthdayList() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // const response = await fetch("https://LISTARAPI");
         const response = await fetch(
-          "https://servidorossa.ddns.net/api/customers"
+          `${apiUrl}/api/customers`,
+          // "https://servidorossa.ddns.net/api/customers",
+          // "http://localhost:3001/api/customers",
+          { credentials: "include" }
         );
         if (!response.ok) {
           throw new Error("Error al obtener la lista");
@@ -97,9 +99,10 @@ export default function BirthdayList() {
   const handleDelete = async (id) => {
     // Lógica para borrar registro en tu backend
     try {
-      // const response = await fetch(`http://localhost:3001/api/customers/${id}`, {
       const response = await fetch(
-        `https://servidorossa.ddns.net/api/customers/${id}`,
+        `${apiUrl}/api/customers/${id}`,
+        // `https://servidorossa.ddns.net/api/customers/${id}`,
+        // `http://localhost:3001/api/customers/${id}`,
         {
           method: "DELETE",
         }

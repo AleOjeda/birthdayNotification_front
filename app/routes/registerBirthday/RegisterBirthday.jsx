@@ -31,7 +31,6 @@ export default function RegisterBirthday() {
 
   const formik = useFormik({
     initialValues: {
-      user_id: 1,
       name: "",
       last_name: "",
       birthday: null,
@@ -54,9 +53,10 @@ export default function RegisterBirthday() {
       });
 
       try {
-        // const response = await fetch("https://CREARAPI", {
         const response = await fetch(
-          "https://servidorossa.ddns.net/api/customers",
+          `${apiUrl}/api/customers`,
+          // "http://localhost:3001/api/customers",
+          // "https://servidorossa.ddns.net/api/customers",
           {
             method: "POST",
             headers: {

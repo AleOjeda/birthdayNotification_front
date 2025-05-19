@@ -10,6 +10,13 @@ export function meta({}: Route.MetaArgs) {
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
+import type { LoaderFunctionArgs } from "react-router";
+import { requireAuth } from "../../utils/auth.server";
+
+export async function loader(args: LoaderFunctionArgs) {
+  await requireAuth(args);
+  return null;
+}
 
 export default function Home() {
   return <>
