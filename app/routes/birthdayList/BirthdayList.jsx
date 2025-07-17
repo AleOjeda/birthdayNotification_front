@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,12 +9,12 @@ import {
   Paper,
   Button,
 } from "@mui/material";
-import { useNavigate } from "react-router";
 import EditBirthdayModal from "./EditBirthdayModal";
+import { useApi } from "../../hooks/useApi";
 
 export default function BirthdayList() {
+  const { get, put, del } = useApi();
   const [birthdayList, setBirthdayList] = useState([]);
-  const navigate = useNavigate();
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -71,29 +71,52 @@ export default function BirthdayList() {
       alert("Hubo un error al guardar los cambios.");
     }
   };
-
+  // const handleSave = async (formData) => {
+  //   try {
+  //     const res = await put(`/api/customers/${selectedPerson.id}`, formData);
+  //     if (!res.ok) throw new Error();
+  //     setBirthdayList((list) =>
+  //       list.map((p) => (p.id === id ? { ...p, ...formData } : p))
+  //     );
+  //     handleCloseModal();
+  //   } catch {
+  //     alert("Error al guardar cambios.");
+  //   }
+  // };
   // Cargar lista de la API
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(
-          `${apiUrl}/api/customers`,
-          // "https://servidorossa.ddns.net/api/customers",
-          // "http://localhost:3001/api/customers",
-          { credentials: "include" }
-        );
-        if (!response.ok) {
-          throw new Error("Error al obtener la lista");
-        }
-        const data = await response.json();
-        setBirthdayList(data);
-      } catch (error) {
-        console.error(error);
-        alert("Hubo un problema al obtener la lista de cumpleaños.");
-      }
-    }
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await fetch(
+  //         `${apiUrl}/api/customers`,
+  //         // "https://servidorossa.ddns.net/api/customers",
+  //         // "http://localhost:3001/api/customers",
+  //         { credentials: "include" }
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error("Error al obtener la lista");
+  //       }
+  //       const data = await response.json();
+  //       setBirthdayList(data);
+  //     } catch (error) {
+  //       console.error(error);
+  //       alert("Hubo un problema al obtener la lista de cumpleaños.");
+  //     }
+  //   }
 
-    fetchData();
+  //   fetchData();
+  // }, []);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await get("/api/customers");
+        if (!res.ok) throw new Error();
+        setBirthdayList(await res.json());
+      } catch (e) {
+        console.error(e);
+        alert("Hubo un problema al obtener la lista.");
+      }
+    })();
   }, []);
 
   const handleDelete = async (id) => {

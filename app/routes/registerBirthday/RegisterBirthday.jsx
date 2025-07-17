@@ -1,12 +1,10 @@
 import { useFormik } from "formik";
 import * as Yup from "yup"; // Para validaciones
 import { TextField, Button, Box, Typography } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import es from "date-fns/locale/es";
+import { useApi } from "../../hooks/useApi";
 
 export default function RegisterBirthday() {
+  const { get, put, del } = useApi();
   // Función auxiliar para capitalizar
   const toCapitalLetters = (text) =>
     text

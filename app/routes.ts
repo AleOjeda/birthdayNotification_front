@@ -3,7 +3,10 @@ import { type RouteConfig, index, route, layout } from "@react-router/dev/routes
 
 export default [
               index("routes/login/login.tsx", {
-                // id: "register-birthday-index"
+                id: "login-index"
+              }),
+                          route("login", "routes/login/login.tsx", {
+                id: "login-route"
               }),
     layout (
         // "routes/home/home.tsx",[
@@ -12,9 +15,6 @@ export default [
             // index("routes/registerBirthday/RegisterBirthday.jsx", {
             //     id: "register-birthday-index"
             //   }),
-            // index("routes/login/login.tsx", {
-                // id: "register-birthday-index"
-              // }),
             route("register", "routes/registerBirthday/RegisterBirthday.jsx", {
                 id: "register-birthday-route"
               }),
