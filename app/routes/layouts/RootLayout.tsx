@@ -1,64 +1,113 @@
-import { Outlet, Link } from "react-router";
-import React, { useState, useEffect } from "react";
+import { Outlet, Link, useLocation } from "react-router";
 import {
   AppBar,
   Toolbar,
   Typography,
   Drawer,
   List,
+  ListItemButton,
   ListItemText,
-  ListItemButton,Box, Button, CircularProgress,
+  Box,
 } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import WhatsappQR from "../components/whatsappQR";
-import SenderButton from "../components/senderButton"
-export default function RootLayout() {
-  const drawerWidth = 240;
+import { useNavigate } from "react-router";
+import { Button, Stack } from "@mui/material";
 
+export default function RootLayout() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const menu = [
+    { label: "Dashboard", path: "/dashboard" },
+    { label: "Registrar", path: "/register" },
+    { label: "Lista", path: "/list" },
+    { label: "Calendario", path: "/calendar" },
+  ];
 
   return (
-    <div style={{ display: "flex" }}>
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Birthday Notifier
+    <Box sx={{ display: "flex" }}>
+      {/* TOP BAR */}
+      <AppBar position="fixed" elevation={1}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography variant="h6" fontWeight="bold">
+            🎂 Birthday Notifier
           </Typography>
+
+          <Stack direction="row" spacing={1}>
+            <Button
+              color="inherit"
+              variant="outlined"
+              onClick={() => navigate("/dashboard")}
+            >
+              Dashboard
+            </Button>
+
+            <Button
+              color="inherit"
+              variant="outlined"
+              onClick={() => navigate("/list")}
+            >
+              Lista
+            </Button>
+
+            <Button variant="contained" onClick={() => navigate("/register")}>
+              + Nuevo
+            </Button>
+          </Stack>
         </Toolbar>
       </AppBar>
 
+      {/* SIDEBAR */}
       <Drawer
         variant="permanent"
         sx={{
-          width: drawerWidth,
+          width: 220,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
+            width: 220,
             boxSizing: "border-box",
-            marginTop: "64px", // Ajustar según la altura del AppBar
+            marginTop: "64px",
+            borderRight: "1px solid #eee",
           },
         }}
       >
-        <List>
-          <ListItemButton component={Link} to="/register">
-            Registrar
-          </ListItemButton>
-          <ListItemButton component={Link} to="/list">
-            Ver Lista
-          </ListItemButton>
+        <List sx={{ px: 1 }}>
+          {menu.map((item) => {
+            const active = location.pathname === item.path;
+
+            return (
+              <ListItemButton
+                key={item.path}
+                component={Link}
+                to={item.path}
+                sx={{
+                  borderRadius: 2,
+                  mb: 0.5,
+                  backgroundColor: active ? "#e3f2fd" : "transparent",
+                  color: active ? "#1976d2" : "inherit",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
+              >
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            );
+          })}
         </List>
-         {/* Botón destacado */}
-        <Box sx={{ p: 2, mt: "auto", mb: "auto" }}>
-  <SenderButton />
-        <WhatsappQR />
-        </Box>
       </Drawer>
 
-      <main style={{ flexGrow: 1, padding: "80px 16px 16px 16px" }}>
+      {/* CONTENT */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 4,
+          mt: 8,
+          background: "#f9fafb",
+          minHeight: "100vh",
+        }}
+      >
         <Outlet />
-      </main>
-    </div>
+      </Box>
+    </Box>
   );
 }
