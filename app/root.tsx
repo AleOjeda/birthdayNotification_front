@@ -44,9 +44,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   const theme = createTheme();
 
-  return <>
-  <ThemeProvider theme={theme}>
-  <Outlet /></ThemeProvider></>
+  return (
+    <>
+      <ThemeProvider theme={theme}>
+        <Outlet />
+      </ThemeProvider>
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

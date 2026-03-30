@@ -1,183 +1,157 @@
 import React, { useEffect, useState } from "react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Box,
+  Typography,
   Paper,
+  Stack,
   Button,
+  TextField,
+  Chip,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import CakeIcon from "@mui/icons-material/Cake";
 import EditBirthdayModal from "./EditBirthdayModal";
 
+const apiUrl = "http://localhost:3001";
+
 export default function BirthdayList() {
-  const [birthdayList, setBirthdayList] = useState([]);
-  const navigate = useNavigate();
+  const [list, setList] = useState([]);
   const [selectedPerson, setSelectedPerson] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     last_name: "",
-    phone: "",
     birthday: "",
   });
+  const [search, setSearch] = useState("");
 
-  const handleOpenEditModal = (person) => {
-    setSelectedPerson(person);
-    setFormData({
-      name: person.name,
-      last_name: person.last_name,
-      phone: person.phone,
-      birthday: person.birthday,
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedPerson(null);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = async () => {
-    try {
-      const response = await fetch(
-        `${apiUrl}/api/customers/${selectedPerson.id}`,
-        // `http://localhost:3001/api/customers/${selectedPerson.id}`,
-        // `https://servidorossa.ddns.net/api/customers/${selectedPerson.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      if (!response.ok) throw new Error();
-
-      setBirthdayList((prevList) =>
-        prevList.map((p) =>
-          p.id === selectedPerson.id ? { ...p, ...formData } : p
-        )
-      );
-
-      handleCloseModal();
-    } catch (error) {
-      alert("Hubo un error al guardar los cambios.");
-    }
-  };
-
-  // Cargar lista de la API
+  // cargar datos
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(
-          `${apiUrl}/api/customers`,
-          // "https://servidorossa.ddns.net/api/customers",
-          // "http://localhost:3001/api/customers",
-          { credentials: "include" }
-        );
-        if (!response.ok) {
-          throw new Error("Error al obtener la lista");
-        }
-        const data = await response.json();
-        setBirthdayList(data);
-      } catch (error) {
-        console.error(error);
-        alert("Hubo un problema al obtener la lista de cumpleaños.");
-      }
-    }
-
-    fetchData();
+    fetch(`${apiUrl}/api/customers`)
+      .then((res) => res.json())
+      .then(setList);
   }, []);
 
+  // filtro
+  const filteredList = list.filter((p) =>
+    `${p.name} ${p.last_name}`.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  // abrir modal
+  const openModal = (p) => {
+    setSelectedPerson(p);
+    setFormData(p);
+    setOpen(true);
+  };
+
+  // guardar cambios
+  const handleSave = async () => {
+    await fetch(`${apiUrl}/api/customers/${selectedPerson.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    setList((prev) =>
+      prev.map((p) => (p.id === selectedPerson.id ? { ...p, ...formData } : p)),
+    );
+
+    setOpen(false);
+  };
+
+  // borrar
   const handleDelete = async (id) => {
-    // Lógica para borrar registro en tu backend
-    try {
-      const response = await fetch(
-        `${apiUrl}/api/customers/${id}`,
-        // `https://servidorossa.ddns.net/api/customers/${id}`,
-        // `http://localhost:3001/api/customers/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al borrar el registro");
-      }
-      // Actualizar lista en el estado local
-      const newList = birthdayList.filter((item) => item.id !== id);
-      setBirthdayList(newList);
-      alert("¡Registro borrado exitosamente!");
-    } catch (error) {
-      console.error("Error al borrar:", error);
-      alert("Hubo un problema al borrar el registro.");
-    }
+    await fetch(`${apiUrl}/api/customers/${id}`, {
+      method: "DELETE",
+    });
+
+    setList((prev) => prev.filter((p) => p.id !== id));
   };
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Apellido</TableCell>
-              <TableCell>Teléfono</TableCell>
-              <TableCell>Fecha de Nacimiento</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {birthdayList.map((person) => (
-              <TableRow key={person.id}>
-                <TableCell>{person.name}</TableCell>
-                <TableCell>{person.last_name}</TableCell>
-                <TableCell>{person.phone}</TableCell>
-                <TableCell>{person.birthday}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    onClick={() => handleOpenEditModal(person)}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    size="small"
-                    onClick={() => handleDelete(person.id)}
-                  >
-                    Borrar
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+    <Box sx={{ maxWidth: 700 }}>
+      {/* HEADER */}
+      <Typography variant="h4" mb={2} fontWeight="bold">
+        📋 Lista de cumpleaños
+      </Typography>
 
-            {birthdayList.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No hay registros
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {/* BUSCADOR */}
+      <TextField
+        placeholder="Buscar por nombre..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        fullWidth
+        sx={{ mb: 3 }}
+      />
+
+      {/* RESULTADOS */}
+      <Stack spacing={2}>
+        {filteredList.map((p) => (
+          <Paper
+            key={p.id}
+            elevation={2}
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              transition: "0.2s",
+              "&:hover": {
+                transform: "scale(1.01)",
+                backgroundColor: "#fafafa",
+              },
+            }}
+          >
+            {/* INFO */}
+            <Stack direction="row" spacing={2} alignItems="center">
+              <CakeIcon />
+              <Box>
+                <Typography fontWeight="bold">
+                  {p.name} {p.last_name}
+                </Typography>
+                <Typography fontSize={13} color="gray">
+                  {p.birthday}
+                </Typography>
+              </Box>
+            </Stack>
+
+            {/* ACCIONES */}
+            <Stack direction="row" spacing={1}>
+              <Button size="small" onClick={() => openModal(p)}>
+                Editar
+              </Button>
+
+              <Button
+                size="small"
+                color="error"
+                variant="outlined"
+                onClick={() => handleDelete(p.id)}
+              >
+                Borrar
+              </Button>
+            </Stack>
+          </Paper>
+        ))}
+
+        {/* EMPTY */}
+        {filteredList.length === 0 && (
+          <Typography color="gray">No se encontraron resultados</Typography>
+        )}
+      </Stack>
+
+      {/* MODAL */}
       <EditBirthdayModal
-        open={isModalOpen}
+        open={open}
         formData={formData}
-        onChange={handleChange}
-        onClose={handleCloseModal}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+          })
+        }
+        onClose={() => setOpen(false)}
         onSave={handleSave}
       />
-    </>
+    </Box>
   );
 }

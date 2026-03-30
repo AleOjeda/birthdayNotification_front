@@ -1,28 +1,13 @@
-import { type RouteConfig, index, route, layout } from "@react-router/dev/routes";
-// import  WhatsappQR from "../components/whatsappQR";
+import { index, route, layout } from "@react-router/dev/routes";
 
 export default [
-              index("routes/login/login.tsx", {
-                // id: "register-birthday-index"
-              }),
-    layout (
-        // "routes/home/home.tsx",[
-        "routes/layouts/RootLayout.tsx",[
-            // index("routes/home/home.tsx"),
-            // index("routes/registerBirthday/RegisterBirthday.jsx", {
-            //     id: "register-birthday-index"
-            //   }),
-            // index("routes/login/login.tsx", {
-                // id: "register-birthday-index"
-              // }),
-            route("register", "routes/registerBirthday/RegisterBirthday.jsx", {
-                id: "register-birthday-route"
-              }),
-            route("list", "routes/birthdayList/BirthdayList.jsx"),
-            // route("edit/:id", "routes/editBirthday/EditBirthday.jsx"),
-            route("QR", "routes/components/whatsappQR.tsx"),
-            // route("register", "routes/home/home.tsx"),
-        ]
-    ),
-    // route("about", "routes/home/home.tsx")
-] satisfies RouteConfig;
+  // 👉 root "/" redirige a dashboard
+  index("routes/redirect.tsx"),
+
+  layout("routes/layouts/RootLayout.tsx", [
+    route("dashboard", "routes/dashboard/BirthdayDashboard.jsx"),
+    route("register", "routes/registerBirthday/RegisterBirthday.jsx"),
+    route("list", "routes/birthdayList/BirthdayList.jsx"),
+    route("calendar", "routes/calendar/MonthlyCalendar.jsx"),
+  ]),
+];

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,6 +5,7 @@ import {
   DialogActions,
   TextField,
   Button,
+  Stack,
 } from "@mui/material";
 
 export default function EditBirthdayModal({
@@ -16,47 +16,42 @@ export default function EditBirthdayModal({
   onSave,
 }) {
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Editar Persona</DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>✏️ Editar</DialogTitle>
+
       <DialogContent>
-        <TextField
-          margin="dense"
-          label="Nombre"
-          name="name"
-          value={formData.name}
-          onChange={onChange}
-          fullWidth
-        />
-        <TextField
-          margin="dense"
-          label="Apellido"
-          name="last_name"
-          value={formData.last_name}
-          onChange={onChange}
-          fullWidth
-        />
-        <TextField
-          margin="dense"
-          label="Teléfono"
-          name="phone"
-          value={formData.phone}
-          onChange={onChange}
-          fullWidth
-        />
-        <TextField
-          margin="dense"
-          label="Fecha de Nacimiento"
-          name="birthday"
-          type="date"
-          value={formData.birthday}
-          onChange={onChange}
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-        />
+        <Stack spacing={2} mt={1}>
+          <TextField
+            label="Nombre"
+            name="name"
+            value={formData.name}
+            onChange={onChange}
+            fullWidth
+          />
+
+          <TextField
+            label="Apellido"
+            name="last_name"
+            value={formData.last_name}
+            onChange={onChange}
+            fullWidth
+          />
+
+          <TextField
+            type="date"
+            label="Fecha"
+            name="birthday"
+            value={formData.birthday}
+            onChange={onChange}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+          />
+        </Stack>
       </DialogContent>
-      <DialogActions>
+
+      <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose}>Cancelar</Button>
-        <Button onClick={onSave} variant="contained" color="primary">
+        <Button variant="contained" onClick={onSave}>
           Guardar
         </Button>
       </DialogActions>
