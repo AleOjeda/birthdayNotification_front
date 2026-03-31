@@ -11,7 +11,7 @@ import {
 import CakeIcon from "@mui/icons-material/Cake";
 import EditBirthdayModal from "./EditBirthdayModal";
 
-const apiUrl = "http://localhost:3001";
+const apiUrl = "https://servidorossa.ddns.net";
 
 export default function BirthdayList() {
   const [list, setList] = useState([]);

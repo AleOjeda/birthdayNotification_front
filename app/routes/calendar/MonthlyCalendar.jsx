@@ -3,7 +3,7 @@ import { Box, Typography, Paper, Grid, Stack, IconButton } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const apiUrl = "http://localhost:3001";
+const apiUrl = "https://servidorossa.ddns.net";
 
 const weekDays = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
