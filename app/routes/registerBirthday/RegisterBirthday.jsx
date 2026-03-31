@@ -9,7 +9,7 @@ import {
   Stack,
 } from "@mui/material";
 
-const apiUrl = "http://localhost:3001";
+const apiUrl = "https://servidorossa.ddns.net";
 
 export default function RegisterBirthday() {
   const validationSchema = Yup.object().shape({

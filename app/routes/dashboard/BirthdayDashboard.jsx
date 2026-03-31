@@ -13,7 +13,7 @@ import {
 import CakeIcon from "@mui/icons-material/Cake";
 import { useNavigate } from "react-router";
 
-const apiUrl = "http://localhost:3001";
+const apiUrl = "https://servidorossa.ddns.net";
 
 export default function BirthdayDashboard() {
   const [today, setToday] = useState([]);
