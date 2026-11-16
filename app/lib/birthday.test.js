@@ -75,11 +75,17 @@ describe("etiquetas", () => {
 
 describe("ordenamiento", () => {
   const c = (name, last_name, days_until = 0) => ({ name, last_name, days_until });
-  it("por próximo cumpleaños con desempate por apellido y nombre", () => {
-    const list = [c("Ana", "Zapata", 2), c("Luis", "Álvarez", 2), c("Beto", "Álvarez", 2), c("Zoe", "Pérez", 0)];
+  it("por próximo cumpleaños con desempate por nombre y apellido", () => {
+    const list = [c("Ana", "Zapata", 2), c("Luis", "Álvarez", 2), c("Beto", "Álvarez", 2), c("Ana", "Bravo", 2), c("Zoe", "Pérez", 0)];
     const input = [...list];
     const out = sortByNextBirthday(list);
-    expect(out.map((x) => x.name)).toEqual(["Zoe", "Beto", "Luis", "Ana"]);
+    expect(out.map((x) => `${x.name} ${x.last_name}`)).toEqual([
+      "Zoe Pérez",
+      "Ana Bravo",
+      "Ana Zapata",
+      "Beto Álvarez",
+      "Luis Álvarez",
+    ]);
     expect(list).toEqual(input);
   });
   it("days_until no numérico va al final con desempate estable por nombre", () => {
@@ -87,12 +93,71 @@ describe("ordenamiento", () => {
     const list = [mk("A", "Zeta", null), mk("B", "Alva", undefined), mk("C", "Pérez", 5), mk("D", "Beta", NaN), mk("E", "Alva", 0)];
     const input = [...list];
     const out = sortByNextBirthday(list);
-    expect(out.map((x) => x.name)).toEqual(["E", "C", "B", "D", "A"]);
+    expect(out.map((x) => x.name)).toEqual(["E", "C", "A", "B", "D"]);
     expect(list).toEqual(input);
   });
+  it("sortByName: mismo apellido, distinto nombre se ordena por nombre", () => {
+    const out = sortByName([c("Carlos", "Pérez"), c("Ana", "Pérez"), c("Bea", "Pérez")]);
+    expect(out.map((x) => x.name)).toEqual(["Ana", "Bea", "Carlos"]);
+  });
+  it("sortByName: nombre antes que apellido", () => {
+    const out = sortByName([c("Zoe", "Alva"), c("Ana", "Zapata")]);
+    expect(out.map((x) => x.name)).toEqual(["Ana", "Zoe"]);
+  });
+  it("sortByName: mismo nombre se desempata por apellido", () => {
+    const out = sortByName([c("Ana", "Zapata"), c("Ana", "Álvarez"), c("Ana", "Muñoz")]);
+    expect(out.map((x) => x.last_name)).toEqual(["Álvarez", "Muñoz", "Zapata"]);
+  });
   it("tildes y Ñ en español", () => {
-    const out = sortByName([c("A", "Zeta"), c("B", "Ñandú"), c("C", "Nube"), c("D", "Álamo"), c("E", "Oso")]);
-    expect(out.map((x) => x.last_name)).toEqual(["Álamo", "Nube", "Ñandú", "Oso", "Zeta"]);
+    const out = sortByName([c("Beatriz", "X"), c("Ñandú", "X"), c("Nicolás", "X"), c("Álvaro", "X"), c("Oscar", "X")]);
+    expect(out.map((x) => x.name)).toEqual(["Álvaro", "Beatriz", "Nicolás", "Ñandú", "Oscar"]);
+  });
+  it("sortByName: name vacío o nulo va al final", () => {
+    const out = sortByName([c("", "Alva"), c("Zoe", "Zeta"), c(null, "Beta"), c("Ana", "Lopez"), c(undefined, "Cruz"), c("  ", "Dia")]);
+    expect(out.map((x) => x.name).slice(0, 2)).toEqual(["Ana", "Zoe"]);
+    expect(out.slice(2).map((x) => x.last_name).sort()).toEqual(["Alva", "Beta", "Cruz", "Dia"]);
+  });
+  it("homónimos exactos se ordenan por id sin importar el orden de entrada", () => {
+    const h = (id) => ({ id, name: "Ana", last_name: "Pérez", days_until: 3 });
+    const a = [h(3), h(1), h(2)];
+    const b = [h(2), h(3), h(1)];
+    expect(sortByName(a).map((x) => x.id)).toEqual([1, 2, 3]);
+    expect(sortByName(b).map((x) => x.id)).toEqual([1, 2, 3]);
+    expect(sortByNextBirthday(a).map((x) => x.id)).toEqual([1, 2, 3]);
+    expect(sortByNextBirthday(b).map((x) => x.id)).toEqual([1, 2, 3]);
+    expect(a.map((x) => x.id)).toEqual([3, 1, 2]);
+  });
+  it("homónimos que difieren solo en tildes/mayúsculas se ordenan por id", () => {
+    const list = [
+      { id: 9, name: "JOSÉ", last_name: "Muñoz" },
+      { id: 4, name: "jose", last_name: "munoz" },
+      { id: 7, name: "José", last_name: "MUÑOZ" },
+    ];
+    expect(sortByName(list).map((x) => x.id)).toEqual([4, 7, 9]);
+    expect(sortByName([...list].reverse()).map((x) => x.id)).toEqual([4, 7, 9]);
+  });
+  it("id ausente o no numérico no lanza ni altera los demás criterios", () => {
+    const list = [
+      { name: "Ana", last_name: "B" },
+      { id: "x", name: "Ana", last_name: "A" },
+      { id: null, name: "Ana", last_name: "A" },
+      { id: 1, name: "Ana", last_name: "A" },
+    ];
+    expect(() => sortByName(list)).not.toThrow();
+    expect(() => sortByNextBirthday(list)).not.toThrow();
+    expect(sortByName(list).at(-1).last_name).toBe("B");
+    expect(sortByName([{ id: 2, name: "Ana" }, { id: 1, name: "Ana" }]).map((x) => x.id)).toEqual([1, 2]);
+  });
+  it("prefijos: María antes de María José, y María José antes de Mariano (es, base)", () => {
+    const out = sortByName([c("Mariano", ""), c("María José", ""), c("María", "")]);
+    expect(out.map((x) => x.name)).toEqual(["María", "María José", "Mariano"]);
+  });
+  it("sortByName no muta la lista", () => {
+    const list = [c("Zoe", "A"), c("Ana", "B")];
+    const input = [...list];
+    const out = sortByName(list);
+    expect(out).not.toBe(list);
+    expect(list).toEqual(input);
   });
 });
 

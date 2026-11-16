@@ -128,7 +128,7 @@ describe("MonthlyCalendar", () => {
 
   it("varios en un día: panel con el detalle y aria-pressed", async () => {
     const user = await setup([make(1, "Ana", "Soto", 20, 3), make(2, "Bea", "Alva", 20, 3)]);
-    const cell = cellFor(/20 de marzo: cumpleaños de Bea Alva, Ana Soto/);
+    const cell = cellFor(/20 de marzo: cumpleaños de Ana Soto, Bea Alva/);
     expect(cell).toHaveAttribute("aria-pressed", "false");
     await user.click(cell);
     expect(cell).toHaveAttribute("aria-pressed", "true");

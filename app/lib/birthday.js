@@ -78,12 +78,23 @@ export function daysUntilLabel(days) {
 }
 
 const collator = (a, b) => a.localeCompare(b, "es", { sensitivity: "base" });
-const byName = (a, b) =>
-  collator(a.last_name ?? "", b.last_name ?? "") || collator(a.name ?? "", b.name ?? "");
-
+const isBlank = (s) => s === null || s === undefined || String(s).trim() === "";
 const isNum = (n) => typeof n === "number" && !Number.isNaN(n);
+/** Desempate final por id; si alguno no es numérico, 0 (nunca lanza). */
+const byId = (a, b) => (isNum(a.id) && isNum(b.id) ? a.id - b.id : 0);
+/** Nombre primero (vacío/nulo al final), apellido y por último id como desempates. */
+const byName = (a, b) => {
+  const ab = isBlank(a.name);
+  const bb = isBlank(b.name);
+  if (ab !== bb) return ab ? 1 : -1;
+  return (
+    collator(String(a.name ?? ""), String(b.name ?? "")) ||
+    collator(String(a.last_name ?? ""), String(b.last_name ?? "")) ||
+    byId(a, b)
+  );
+};
 
-/** Próximos primero; days_until no numérico va al final. Desempate por apellido y nombre. No muta. */
+/** Próximos primero; days_until no numérico va al final. Desempate por nombre y apellido. No muta. */
 export function sortByNextBirthday(list) {
   return [...list].sort((a, b) => {
     const an = isNum(a.days_until);

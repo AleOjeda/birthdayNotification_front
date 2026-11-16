@@ -75,9 +75,9 @@ describe("BirthdayList", () => {
     expect(screen.getByRole("button", { name: "Próximos" })).toHaveAttribute("aria-pressed", "true");
   });
 
-  it("desempata por apellido y nombre cuando coinciden los días", async () => {
+  it("desempata por nombre y apellido cuando coinciden los días", async () => {
     await setup([make(1, "Bea", "Zeta", 3), make(2, "Ana", "Zeta", 3), make(3, "Cris", "Alva", 3)]);
-    expect(names()).toEqual(["Cris Alva", "Ana Zeta", "Bea Zeta"]);
+    expect(names()).toEqual(["Ana Zeta", "Bea Zeta", "Cris Alva"]);
   });
 
   it("alterna a Nombre A–Z respetando tildes y Ñ, y mantiene el orden al buscar", async () => {
@@ -85,13 +85,13 @@ describe("BirthdayList", () => {
     await user.click(screen.getByRole("button", { name: "Nombre A–Z" }));
     expect(names()).toEqual([
       "Ana Álvarez",
-      "Pía Núñez",
-      "Ñoño Ñancupil",
       "Luis Olmos",
+      "Ñoño Ñancupil",
+      "Pía Núñez",
       "Zoe Zapata",
     ]);
     await user.type(screen.getByLabelText("Buscar por nombre"), "o");
-    expect(names()).toEqual(["Ñoño Ñancupil", "Luis Olmos", "Zoe Zapata"]);
+    expect(names()).toEqual(["Luis Olmos", "Ñoño Ñancupil", "Zoe Zapata"]);
   });
 
   it("busca y muestra el contador de coincidencias", async () => {
