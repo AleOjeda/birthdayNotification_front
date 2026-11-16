@@ -5,11 +5,78 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+:root {
+  --bg: #faf7ff;
+  --bg-accent: radial-gradient(
+      900px 500px at 100% -10%,
+      rgba(249, 115, 22, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at -10% 0%,
+      rgba(124, 58, 237, 0.1),
+      transparent 60%
+    );
+}
+
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  min-height: 100%;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+body {
+  background-image: var(--bg-accent);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(124, 58, 237, 0.2);
+}
+
+/* Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 58, 237, 0.35) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.3);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.5);
+  background-clip: content-box;
+}
+
+:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+.MuiAppBar-root :focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition: none !important;
+    animation: none !important;
   }
 }

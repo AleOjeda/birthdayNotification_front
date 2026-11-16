@@ -1,8 +1,8 @@
-import { redirect } from "react-router";
+import { indexLoader } from "../lib/guard";
+import SessionLoading from "./auth/SessionLoading";
 
-export function loader() {
-  return redirect("/dashboard");
-}
+export const clientLoader = indexLoader;
+export const HydrateFallback = SessionLoading;
 
 export default function Redirect() {
   return null;

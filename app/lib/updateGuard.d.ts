@@ -1,0 +1,12 @@
+export const RELOAD_WINDOW_MS: number;
+export const navigation: { reload: () => void; assign: (url: string) => void };
+export function readAttempt(): { target: string; at: number } | null;
+export const MAX_RELOADS: number;
+export function readRecentReloads(now?: number): number[];
+export function reloadLimitReached(now?: number): boolean;
+export function canAttemptReload(target: string, now?: number): boolean;
+export function recordAttempt(target: string, now?: number): void;
+export function updateFailedAfterReload(current: string, now?: number): boolean;
+export function reloadForUpdate(target: string, destination?: string): boolean;
+export function simulateNewDocument(): void;
+export function resetUpdateGuard(): void;
