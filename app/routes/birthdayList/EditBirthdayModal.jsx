@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
+  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -68,20 +69,34 @@ function EditForm({ customer, onClose, onSave, saving }) {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} noValidate>
-      <DialogTitle>
+    <form
+      onSubmit={formik.handleSubmit}
+      noValidate
+      // columna flex: el contenido scrollea y las acciones quedan siempre visibles
+      style={{ display: "flex", flexDirection: "column", minHeight: 0, flex: "1 1 auto" }}
+    >
+      <DialogTitle sx={{ pb: 1 }}>
         <span aria-hidden>✏️</span> Editar cumpleaños
       </DialogTitle>
 
       <DialogContent>
-        <Stack spacing={1} pt={1}>
-          <TextField label="Nombre" autoComplete="off" {...textProps("name")} />
-          <TextField
-            label="Apellido"
-            autoComplete="off"
-            {...textProps("last_name")}
-          />
+        <Stack spacing={0.5} pt={1}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+              columnGap: 2,
+            }}
+          >
+            <TextField label="Nombre" autoComplete="off" {...textProps("name")} />
+            <TextField
+              label="Apellido"
+              autoComplete="off"
+              {...textProps("last_name")}
+            />
+          </Box>
           <BirthdayFields
+            dense
             values={formik.values}
             errors={formik.errors}
             touched={{ ...formik.touched, birth_day: true, birth_month: true }}
@@ -93,7 +108,7 @@ function EditForm({ customer, onClose, onSave, saving }) {
         </Stack>
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, pb: 2 }}>
+      <DialogActions sx={{ px: 3, pb: 1.5 }}>
         <Button onClick={onClose} disabled={saving} color="inherit">
           Cancelar
         </Button>
@@ -128,7 +143,7 @@ export default function EditBirthdayModal({
     <Dialog
       open={open}
       onClose={saving ? undefined : onClose}
-      maxWidth="xs"
+      maxWidth="sm"
       fullWidth
     >
       {customer && (
